@@ -1,0 +1,163 @@
+/* Reset Styles */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%; /* Ensure full height */
+    font-family: "Poppins", sans-serif;
+    background-color: transparent !important; /* Ensure no background color */
+}
+
+/* Navbar */
+.navbar {
+    background: rgba(0, 0, 0, 0.7); /* Dark transparent */
+    padding: 15px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%; /* Ensures it spans the full width */
+}
+
+.nav-links {
+    display: flex;
+    gap: 350px; /* Corrected space between nav links */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+.nav-links a i {
+    margin-right: 8px; /* Adds space between icon and text */
+    font-size: 20px; /* Adjust the icon size */
+}
+
+.nav-links a:hover {
+    color: #ffcc00;
+}
+
+/* Hero Section */
+.hero {
+    background: url('{% static "images/book_bg.jpg" %}') no-repeat center center/cover;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    position: relative;
+    margin-top: 0; /* No margin */
+    padding-top: 0 !important; /* Ensure no padding */
+    background-color: transparent; /* Force the background to be transparent */
+}
+
+/* Hero Content Styling */
+.hero-content {
+    max-width: 600px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 40px;
+    border-radius: 10px;
+    animation: fadeIn 2s ease-in-out;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.quote {
+    font-size: 20px;
+    font-style: italic;
+    margin-bottom: 20px;
+}
+
+.btn {
+    background: #28a745;
+    color: white;
+    padding: 12px 24px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #218838;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+/* catogery*/
+body {
+    background-color: #f8f9fa; /* Keeping the existing background */
+    text-align: center;
+}
+
+.back-button {
+    background: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    transition: 0.3s;
+}
+
+.back-button:hover {
+    background: #218838;
+}
+
+.category-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 50px;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.category-box {
+    width: 200px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: black; /* Changed text color for better contrast */
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 10px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    background-color: powderblue; /* Updated category box background */
+}

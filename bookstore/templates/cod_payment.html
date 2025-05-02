@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash on Delivery Payment</title>
+</head>
+<body>
+    <h2>Thank you for your order!</h2>
+    <p>Your order has been placed successfully using <strong>Cash on Delivery</strong>.</p>
+    <p>Order ID: {{ order.id }}</p>
+    <p>Total Price: {{ order.total_price }}</p>
+    <a href="{% url 'home' %}">Go to Home</a>
+</body>
+</html>

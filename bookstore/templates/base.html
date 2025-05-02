@@ -1,0 +1,182 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.title }}</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Roboto:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f9f9f9, #e3e3e3);
+            text-align: center;
+            padding: 30px;
+        }
+
+        .book-details-heading {
+            font-family: 'Roboto Slab', serif;
+            font-size: 3em;
+            font-weight: 700;
+            color: #ff3b3b;
+            text-shadow: 2px 2px 15px rgba(255, 0, 0, 0.6);
+            margin-bottom: 25px;
+        }
+
+        .book-container {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .book-image {
+            width: 220px;
+            border-radius: 12px;
+        }
+
+        .book-info {
+            text-align: left;
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            max-width: 450px;
+        }
+
+        .book-title {
+            font-size: 2.2em;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .book-price {
+            font-size: 1.6em;
+            color: #27ae60;
+            font-weight: bold;
+        }
+
+        .add-to-cart {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 18px;
+            font-size: 1em;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-to-cart i {
+            font-size: 1.2em;
+        }
+
+        .wishlist-btn {
+            background-color: transparent;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: gray;
+        }
+
+        .wishlist-btn.active {
+            color: pink;
+        }
+
+        .cart-message {
+            display: none;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+
+        .out-of-stock {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="book-details-heading">Book Hub</h1>
+    
+    <div class="book-container">
+        <div class="book-image-container">
+            {% if book.image %}
+                <img src="{{ book.image.url }}" alt="{{ book.title }}" class="book-image">
+            {% else %}
+                <img src="{% static 'images/default_book.jpg' %}" alt="No Image Available" class="book-image">
+            {% endif %}
+        </div>
+
+        <div class="book-info">
+            <h2 class="book-title" id="bookTitle">{{ book.title }}</h2>
+            <p class="book-price">₹ <span id="bookPrice">{{ book.price }}</span></p>
+            <p><strong>Author:</strong> {{ book.author }}</p>
+            <p>{{ book.description }}</p>
+
+            
+            {% if book.id %}
+            <form action="{% url 'add_to_cart' book.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" id="addToCart" class="add-to-cart {% if book.stock == 0 %}out-of-stock{% endif %}" 
+                    {% if book.stock == 0 %}disabled{% endif %}>
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
+            </form>
+        {% else %}
+            <p style="color: red;">Book not available for purchase.</p>
+        {% endif %}
+        
+
+            <!-- Wishlist Button -->
+            <button class="wishlist-btn" id="wishlistBtn">
+                <i class="fas fa-heart"></i>
+            </button>
+
+            <!-- Cart Message -->
+            <div id="cartMessage" class="cart-message">
+                Your item has been added to the cart. <a href="{% url 'cart_view' %}" style="color: yellow;">View your cart</a>.
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const wishlistBtn = document.getElementById('wishlistBtn');
+
+            if (wishlistBtn) {
+                wishlistBtn.addEventListener('click', function () {
+                    wishlistBtn.classList.toggle("active");
+
+                    // Change title for better UX
+                    if (wishlistBtn.classList.contains("active")) {
+                        wishlistBtn.title = "Remove from Wishlist";
+                    } else {
+                        wishlistBtn.title = "Add to Wishlist";
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Success</title>
+    <style>
+        /* Page Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #101010;
+            text-align: center;
+            padding: 50px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        /* Success Message Box */
+        .success-box {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            animation: slideIn 1s ease-in-out;
+        }
+
+        /* Success Icon */
+        .checkmark {
+            font-size: 50px;
+            color: #4CAF50;
+            animation: pop 0.5s ease-in-out;
+        }
+
+        /* Back to Home Button */
+        .home-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            border-radius: 5px;
+            transition: 0.3s ease-in-out;
+        }
+
+        .home-btn:hover {
+            background-color: #218838;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-box">
+        <div class="checkmark">✔</div>
+        <h2>Order Placed Successfully!</h2>
+        <p>Your order will be delivered soon.</p>
+        <a href="{% url 'home' %}" class="home-btn">Back to Home</a>
+    </div>
+
+</body>
+</html>

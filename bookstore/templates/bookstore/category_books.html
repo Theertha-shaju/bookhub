@@ -1,0 +1,29 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category_name }} Books</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>{{ category_name }} Books</h1>
+
+    <div class="book-list">
+        {% for book in books %}
+            <div class="book">
+                <h2>{{ book.title }}</h2>
+                <p><strong>Author:</strong> {{ book.author }}</p>
+                <p><strong>Price:</strong> ₹{{ book.price }}</p>
+                <p><strong>Description:</strong> {{ book.description }}</p>
+                <p><strong>Stock:</strong> {{ book.stock }}</p>
+            </div>
+        {% empty %}
+            <p>No books available in this category.</p>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'categories' %}" class="back-btn">Back to Categories</a>
+</body>
+</html>

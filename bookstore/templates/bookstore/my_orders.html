@@ -1,0 +1,42 @@
+{% extends 'base_order.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>My Orders</h2>
+
+    {% for entry in orders %}
+    <div class="order-summary border p-3 mb-4 bg-light rounded">
+        <h5>Order ID: {{ entry.order.order_id }}</h5>
+        <p><strong>Order Date:</strong> {{ entry.order.ordered_at }}</p>
+        <p><strong>Total Amount:</strong> ₹{{ entry.order.total_price }}</p>
+        <p><strong>Number of Books:</strong> {{ entry.num_books }}</p>
+        <p><strong>Payment Status:</strong> {{ entry.order.payment_status }}</p>
+        <p><strong>Shipping Status:</strong> {{ entry.order.status }}</p>
+
+        <div class="book-list mt-3">
+            {% for item in entry.order_items %}
+            <div class="book-item d-flex align-items-center border p-2 my-2 bg-white rounded">
+                <img src="{{ item.book.image.url }}" alt="{{ item.book.title }}" class="me-3" style="width: 80px; height: auto;">
+                <div>
+                    <h5>{{ item.book.title }}</h5>
+                    <p>Author: {{ item.book.author }}</p>
+                    <p>Quantity: {{ item.quantity }}</p>
+                    <p>Price: ₹{{ item.price }}</p>
+                    <p>Subtotal: ₹{{ item.subtotal }}</p>
+                    <p>Estimated Delivery Date: {{ entry.order.delivery_date }}</p>
+                    <button class="btn btn-primary">Rate/Review</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="additional-info mt-2">
+            <p><strong>Billing Address:</strong> {{ entry.order.billing_address }}</p>
+            <p><strong>Delivery Method:</strong> {{ entry.order.delivery_method }}</p>
+        </div>
+    </div>
+    {% empty %}
+    <p>You have no orders yet.</p>
+    {% endfor %}
+</div>
+{% endblock %}

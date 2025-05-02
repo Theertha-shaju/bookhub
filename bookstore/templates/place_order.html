@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center">Place Your Order</h2>
+
+    <!-- Order Summary -->
+    <div class="order-summary">
+        <h3>Order Summary</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>{{ item.book.title }}</td>
+                    <td>₹{{ item.book.price|floatformat:2 }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>₹{{ item.book.price|floatformat:2|add:0|mul:item.quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <h4 class="text-right">Grand Total: ₹{{ grand_total|floatformat:2 }}</h4>
+    </div>
+
+    <!-- Address Section -->
+    <div class="address-section">
+        <h3>Delivery Address</h3>
+        <form method="POST" action="{% url 'place_order' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" required class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea id="address" name="address" required class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="text" id="phone" name="phone" pattern="\d{10}" title="Enter a valid 10-digit phone number" required class="form-control">
+            </div>
+            
+            <!-- Payment Section -->
+            <h3>Payment Method</h3>
+            <p>Currently, we support online payments via Stripe.</p>
+
+            <!-- Place Order Button -->
+            <button type="submit" class="btn btn-success btn-block">Place Order</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 10px;
+    }
+    .order-summary, .address-section {
+        margin-bottom: 20px;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .btn-block {
+        width: 100%;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .text-right {
+        text-align: right;
+        font-weight: bold;
+        font-size: 18px;
+    }
+</style>
+{% endblock %}

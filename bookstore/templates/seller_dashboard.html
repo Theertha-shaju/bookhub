@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
+        }
+        .dashboard {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+            width: 80%;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        .card {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            font-size: 18px;
+            font-weight: bold;
+            width: 200px;
+        }
+        .chart-container {
+            width: 80%;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h2>Seller Dashboard</h2>
+        <div class="stats">
+            <div class="card">Total Books: {{ total_books }}</div>
+            <div class="card">Books Sold: {{ books_sold }}</div>
+            <div class="card">Added to Cart: {{ total_add_to_cart }}</div>
+            
+        </div>
+    
+        <canvas id="growthChart"></canvas>
+    </div>
+    
+    <script>
+        var ctx = document.getElementById('growthChart').getContext('2d');
+        var monthlySales = [{% for sale in monthly_sales %}{"month": "{{ sale.month }}", "total": {{ sale.total }}},{% endfor %}];
+
+        if (monthlySales.length > 0) {
+            var labels = monthlySales.map(sale => sale.month);
+            var dataValues = monthlySales.map(sale => sale.total);
+
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Monthly Sales Growth",
+                        backgroundColor: "blue",
+                        data: dataValues
+                    }]
+                }
+            });
+        } else {
+            document.getElementById('growthChart').style.display = "none";
+        }
+    </script>
+</body>
+</html>

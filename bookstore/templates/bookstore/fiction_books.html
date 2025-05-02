@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fiction Books</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9f9f9;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #ff0000;
+            text-shadow: 3px 3px 10px rgba(255, 0, 0, 0.7);
+        }
+
+        .book-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            width: 280px;
+            height: 550px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            text-align: left;
+        }
+
+        .book-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .book-image-container {
+            width: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .book-image-container img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.4s ease-in-out;
+        }
+
+        .book-image-container:hover img {
+            transform: scale(1.1);
+        }
+
+        .out-of-stock {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: black;
+            border-radius: 8px;
+        }
+
+        .wishlist.active {
+            color: pink;
+        }
+
+        .rating-container i.active {
+            color: gold;
+        }
+
+        .view-button {
+            background-color: blue;
+            color: white;
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .share-options {
+            display: none;
+            flex-direction: column;
+            margin-top: 5px;
+        }
+
+        .share-options a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px;
+            color: black;
+        }
+
+        .icon-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fiction Books</h1>
+    <div class="book-container">
+        {% for book in books %}
+            <div class="book-card">
+                <div class="book-image-container">
+                    {% if book.image %}
+                        <img src="{{ book.image.url }}" alt="{{ book.title }}">
+                    {% else %}
+                        <img src="{% static 'images/default_book.jpg' %}" alt="No Image Available">
+                    {% endif %}
+                    {% if book.stock == 0 %}
+                        <div class="out-of-stock">OUT OF STOCK</div>
+                    {% endif %}
+                </div>
+                
+                <h2>{{ book.title }}</h2>
+                <p><strong>Author:</strong> {{ book.author }}</p>
+                <p><strong>Price:</strong> ₹{{ book.price }}</p>
+
+                <div class="icon-bar">
+                    <i class="fa fa-heart wishlist" onclick="toggleWishlist(this)"></i>
+                    <i class="fa fa-share-alt" onclick="toggleShare(this)"></i>
+                    <div class="share-options">
+                        <a href="#"><i class="fa-brands fa-facebook"></i> Facebook</a>
+                        <a href="#"><i class="fa-brands fa-instagram"></i> Instagram</a>
+                        <a href="#"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+                    </div>
+                </div>
+
+                <div class="rating-container">
+                    <i class="fa fa-star" onclick="rateStar(this, 1)"></i>
+                    <i class="fa fa-star" onclick="rateStar(this, 2)"></i>
+                    <i class="fa fa-star" onclick="rateStar(this, 3)"></i>
+                    <i class="fa fa-star" onclick="rateStar(this, 4)"></i>
+                    <i class="fa fa-star" onclick="rateStar(this, 5)"></i>
+                </div>
+
+                <button class="view-button" onclick="window.location.href='/book/{{ book.id }}/'">More Details</button>
+            </div>
+        {% endfor %}
+    </div>
+
+    <script>
+        function toggleWishlist(element) {
+            element.classList.toggle('active');
+            alert("Your item has been added to Wishlist");
+        }
+
+        function toggleShare(element) {
+            let shareOptions = element.nextElementSibling;
+            shareOptions.style.display = shareOptions.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function rateStar(element, rating) {
+            let stars = element.parentElement.children;
+            for (let i = 0; i < stars.length; i++) {
+                stars[i].classList.toggle('active', i < rating);
+            }
+        }
+    </script>
+</body>
+</html>

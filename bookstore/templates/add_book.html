@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Book - Book Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 60%;
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+        }
+        .input-box {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        .icon {
+            padding: 10px;
+            background: #e0e0e0;
+            border-right: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+        }
+        input[type="text"], input[type="number"] {
+            border: none;
+            outline: none;
+            padding: 10px;
+            flex: 1;
+        }
+        .row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .left-container {
+            width: 40%;
+            background: #eaeaea;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .right-container {
+            width: 55%;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 100px;
+        }
+        .category-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .image-preview {
+            width: 100px;
+            height: 150px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            object-fit: cover;
+            display: none;
+        }
+        .edit-button {
+            margin-top: 5px;
+            background-color: #007bff;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            display: none;
+        }
+        .edit-button:hover {
+            background-color: #0056b3;
+        }
+        button {
+            width: 100%;
+            background-color: #c3e70e;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #30d838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Add a New Book</h2>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <label for="title">Title:</label>
+            <input type="text" name="title" class="input-box" required placeholder="Enter book title">
+
+            <label for="author">Author:</label>
+            <input type="text" name="author" class="input-box" required placeholder="Enter author name">
+
+            <label for="category">Category:</label>
+            <div class="category-box">
+                <input type="radio" name="category" value="Science Fiction" required> Science Fiction
+                <input type="radio" name="category" value="Non-Fiction" required> Non-Fiction
+                <input type="radio" name="category" value="Fiction" required> Fiction
+                <input type="radio" name="category" value="Others" required> Others
+            </div>
+
+            <label for="price">Price:</label>
+            <div class="input-group">
+                <span class="icon">💰</span>
+                <input type="number" name="price" class="input-box" required placeholder="Enter price" step="0.01">
+            </div>
+
+            <label for="stock">Stock:</label>
+            <div class="input-group">
+                <span class="icon">📦</span>
+                <input type="number" name="stock" class="input-box" required placeholder="Enter stock quantity" min="1">
+            </div>
+
+            <div class="row">
+                <div class="left-container">
+                    <label for="image">Book Cover Image:</label>
+                    <img id="preview" class="image-preview">
+                    <input type="file" name="image" id="imageInput" accept="image/*" required onchange="previewImage()">
+                    <button type="button" id="editButton" class="edit-button" onclick="editImage()">Edit</button>
+                </div>
+
+                <div class="right-container">
+                    <label for="description">Book Description:</label>
+                    <textarea name="description" required placeholder="Enter book details"></textarea>
+                </div>
+            </div>
+
+            <button type="submit">Publish</button>
+        </form>
+    </div>
+
+    <script>
+        function previewImage() {
+            const input = document.getElementById('imageInput');
+            const preview = document.getElementById('preview');
+            const editButton = document.getElementById('editButton');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = "block";
+                    editButton.style.display = "inline-block";
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function editImage() {
+            document.getElementById('imageInput').click();
+        }
+    </script>
+
+</body>
+</html>

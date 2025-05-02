@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Hub</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        /* Set background image */
+        body {
+            background: url('{% static "images/book_bg.jpg" %}') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        /* Animation for fade-in effect */
+        .content {
+            animation: fadeIn 2s ease-in-out;
+            max-width: 600px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 40px;
+            border-radius: 10px;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .quote {
+            font-size: 20px;
+            font-style: italic;
+            margin-top: 20px;
+        }
+
+        /* Button animation */
+        .btn {
+            background: #ffcc00;
+            color: black;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 20px;
+            transition: 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            background: white;
+            color: black;
+            transform: scale(1.1);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <h1>Welcome to Book Hub</h1>
+        <p class="quote">"A reader lives a thousand lives before he dies. The man who never reads lives only one." – George R.R. Martin</p>
+        <a href="{% url 'categories' %}" class="btn">Explore Books</a>
+        
+    </div>
+
+</body>
+</html>

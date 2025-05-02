@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Razorpay Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0a0a0a;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            margin: 100px auto;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+        h2 {
+            color: #333;
+        }
+        #rzp-button1 {
+            background-color: #007bff;
+            color: rgb(253, 248, 248);
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+        #rzp-button1:hover {
+            background-color: #0056b3;
+        }
+        #success-message {
+            display: none;
+            color: green;
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Complete Your Payment</h2>
+        <button id="rzp-button1">Pay Now</button>
+        <p id="success-message">🎉 Your order has been placed successfully!</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var options = {
+                "key": "{{ razorpay_key }}", 
+                "amount": 50000, 
+                "currency": "INR",
+                "name": "Book Hub",
+                "description": "Purchase",
+                "order_id": "{{ order_id }}",
+                "image": "{% static 'images/logo.png' %}",
+                "handler": function (response) {
+                    // ✅ Show order success message AFTER payment is completed
+                    document.getElementById("success-message").style.display = "block";
+                    alert("Payment Successful! Your order has been placed.");
+                },
+                "prefill": {
+                    "name": "John Doe",
+                    "email": "johndoe@example.com",
+                    "contact": "9999999999"
+                },
+                "theme": {
+                    "color": "#3399cc"
+                },
+                "method": {  
+                    "netbanking": true,  // ✅ Enable net banking
+                    "card": true,        
+                    "wallet": true,     
+                    "upi": true          
+                }
+            };
+
+            var rzp = new Razorpay(options);
+            document.getElementById('rzp-button1').onclick = function (e) {
+                rzp.open();
+                e.preventDefault();
+            };
+        });
+    </script>
+
+</body>
+</html>

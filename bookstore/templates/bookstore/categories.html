@@ -1,0 +1,229 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories</title>
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap');
+
+        body {
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .sidebar {
+            width: 200px;
+            background: #333;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            position: fixed;
+            height: 100%;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: #444;
+            border-radius: 5px;
+        }
+
+        .main-content {
+            margin-left: 220px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .category-heading {
+            font-size: 3rem;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(255, 99, 71, 0.5);
+        }
+
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            border: 2px solid #333;
+            border-radius: 25px;
+            padding: 5px 10px;
+            width: 200px;
+            transition: width 0.3s ease-in-out;
+            position: relative;
+        }
+
+        .search-box input {
+            border: none;
+            outline: none;
+            padding: 5px;
+            flex: 1;
+            width: 100%;
+        }
+
+        .search-box button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-box:focus-within {
+            width: 300px;
+        }
+
+        .search-results {
+            position: absolute;
+            top: 40px;
+            left: 0;
+            background: white;
+            border: 1px solid #ccc;
+            width: 100%;
+            display: none;
+            z-index: 1000;
+        }
+
+        .search-results a {
+            display: block;
+            padding: 5px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .search-results a:hover {
+            background-color: #f0f0f0;
+        }
+
+        .category-box {
+            padding: 20px;
+            background: #95d1eb;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .category-box:hover {
+            transform: scale(1.05);
+            box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .explore-btn {
+            background: rgb(11, 137, 11);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .explore-btn:hover {
+            background: darkgreen;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <body>
+
+        <nav class="sidebar">
+            <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+            <a href="{% url 'categories' %}"><i class="fas fa-th-large"></i> Categories</a>
+            <a href="{% url 'signup' %}"><i class="fas fa-user-plus"></i> Sign Up</a>  
+            <a href="{% url 'login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
+            <a href="{% url 'admin_login' %}"><i class="fas fa-user-shield"></i> Admin Login</a>
+    
+            {% if request.user.is_authenticated and request.user.is_staff %}
+                <a href="{% url 'admin_dashboard' %}"><i class="fas fa-user-cog"></i> Admin Dashboard</a>
+            {% endif %}
+    
+            <a href="{% url 'cart_view' %}"><i class="fa fa-shopping-cart"></i> View Your Cart</a>
+            <a href="{% url 'my_orders' %}"><i class="fas fa-shopping-bag"></i> My Orders</a>
+    
+            <a href="{% url 'seller_dashboard' %}"><i class="fas fa-tachometer-alt"></i> Seller Dashboard</a>
+            <a href="{% url 'add_book' %}" title="Add Book"><i class="fas fa-plus-circle"></i> Add Book</a>
+            <a href="{% url 'seller_signup' %}"><i class="fas fa-user-plus"></i> Seller Signup</a>
+            <a href="{% url 'seller_login' %}"><i class="fas fa-sign-in-alt"></i> Seller Login</a>
+        </nav>
+    
+    </body>
+    
+
+
+
+    
+    <div class="main-content">
+        <h1 class="category-heading">Explore Categories</h1>
+        <div class="search-box">
+            <input type="text" id="search" placeholder="Search books..." oninput="searchBooks()">
+            <button onclick="searchBooks()"><i class="fas fa-search"></i></button>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+        <div class="category-container">
+            <div class="row">
+                <div class="category-box">Fiction
+                    <a href="{% url 'fiction_books' %}" class="explore-btn">Explore</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="category-box">Non-Fiction
+                    <a href="{% url 'non_fiction_books' %}" class="explore-btn">Explore</a>
+                </div>
+                <div class="category-box">Science Fiction
+                    <a href="{% url 'science_fiction_books' %}" class="explore-btn">Explore</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function searchBooks() {
+            let query = document.getElementById('search').value.trim();
+            if (query.length === 0) {
+                document.getElementById('searchResults').style.display = 'none';
+                return;
+            }
+            fetch(`/search-books/?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    let resultsDiv = document.getElementById('searchResults');
+                    resultsDiv.innerHTML = data.books.map(book => `<a href="/book/${book.id}/">${book.title}</a>`).join('');
+                    resultsDiv.style.display = 'block';
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+
+</body>
+</html>
