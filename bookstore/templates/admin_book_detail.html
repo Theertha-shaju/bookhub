@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Details - Admin</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f7f7f7;
+    }
+    .detail-container {
+      max-width: 800px;
+      margin: 50px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .book-cover {
+      max-width: 150px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="detail-container">
+  <h2 class="text-center mb-4">{{ book.title }}</h2>
+  <img src="{{ book.cover.url }}" alt="Book Cover" class="book-cover img-thumbnail d-block mx-auto">
+
+  <p><strong>Author:</strong> {{ book.author }}</p>
+  <p><strong>Category:</strong> {{ book.category }}</p>
+  <p><strong>Price:</strong> ₹{{ book.price }}</p>
+  <p><strong>Stock:</strong> {{ book.stock }}</p>
+  <p><strong>Description:</strong> {{ book.description }}</p>
+  <p><strong>Published by (Seller ID):</strong> {{ book.seller.id }} - {{ book.seller.username }}</p>
+
+  <div class="mt-4 text-center">
+    <a href="{% url 'admin_delete_book' book.id %}" class="btn btn-danger">Delete Book</a>
+    <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+  </div>
+</div>
+
+</body>
+</html>

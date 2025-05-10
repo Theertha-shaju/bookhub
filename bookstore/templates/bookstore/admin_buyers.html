@@ -1,0 +1,94 @@
+<!-- view_sellers.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Sellers - Book Hub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Your existing CSS styles */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding-left: 220px; /* space for sidebar */
+    }
+    .sidebar {
+      width: 200px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #2c3e50;
+      padding-top: 30px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .sidebar a {
+      text-decoration: none;
+      color: white;
+      padding: 12px 20px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      transition: background 0.3s;
+    }
+    .sidebar a:hover {
+      background-color: #34495e;
+    }
+    .content {
+      margin-left: 220px; /* Space for sidebar */
+      padding: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2><i class="fas fa-cogs"></i> Admin</h2>
+    <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="#"><i class="fas fa-book"></i> Book Details</a>
+    <a href="{% url 'view_sellers' %}"><i class="fas fa-users"></i> Sellers</a>
+    <a href="#"><i class="fas fa-shopping-cart"></i> Orders</a>
+    <a href="{% url 'admin_logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </div>
+
+  <div class="content">
+    <h2>List of Sellers</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Phone Number</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for buyer in buyers %}
+          <tr>
+            <td>{{ buyer.name }}</td>
+            <td>{{ buyer.email }}</td>
+            <td>{{ buyer.phone_number }}</td>
+            <td>{{ buyer.is_active|yesno:"Active,Inactive" }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>

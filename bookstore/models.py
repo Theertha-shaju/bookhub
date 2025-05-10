@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User  
 from django.utils.text import slugify  
 from django.core.validators import MinLengthValidator, MaxLengthValidator  
+from django.shortcuts import render
 
 
 # ✅ Helper Function: Unique Slug Generation  
@@ -83,7 +84,9 @@ class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="User")
     review_text = models.TextField(verbose_name="Review Text")
     image = models.ImageField(upload_to='review_images/', blank=True, null=True, verbose_name="Review Image")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created At")
+    created_at = models.DateTimeField(auto_now_add=True)
+    rating = models.IntegerField(null=True, blank=True, default=0)
+
 
     def __str__(self):
         return f"Review by {self.user.username} on {self.book.title} ({self.created_at:%Y-%m-%d})"  
@@ -189,8 +192,8 @@ class Buyer(models.Model):
     def __str__(self):
         return self.name
     
-class Seller(models.Model):
-    name = models.CharField(max_length=255)
+class Seller(models.Model,):
+    name = models.CharField(max_length=255,null=True)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -208,3 +211,12 @@ class BookRating(models.Model):
 
     def __str__(self):
         return f"Rating for {self.book.title} by {self.user.username}"
+    
+
+
+def payment_details(request):
+    # Fetch all payment details
+    payments = Payment.objects.all()
+
+    # Pass payments to the template
+    return render(request, 'payment_details.html', {'payments': payments})

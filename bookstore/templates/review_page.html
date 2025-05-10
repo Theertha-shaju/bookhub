@@ -1,0 +1,71 @@
+{% extends 'base_order.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Review for {{ book.title }}</h2>
+
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <img src="{{ book.image.url }}" alt="{{ book.title }}" class="img-fluid rounded shadow" style="max-height: 250px;">
+        </div>
+
+        <div class="col-md-8">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Rating Section -->
+                <div class="form-group">
+                    <label for="rating">Rating:</label>
+                    <div class="rating-stars">
+                        {% for i in ratings %}
+                            <input type="radio" id="star{{ i }}" name="rating" value="{{ i }}" {% if i == 5 %} checked {% endif %} />
+                            <label for="star{{ i }}" class="star">&#9733;</label>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Review Text -->
+                <div class="form-group">
+                    <label for="review">Your Review:</label>
+                    <textarea class="form-control" id="review_text" name="review_text" rows="4" required></textarea>
+
+                </div>
+
+                <!-- Image Upload -->
+                <div class="form-group">
+                    <label for="image">Upload Image (Optional):</label>
+                    <input type="file" class="form-control-file" id="image" name="image">
+                </div>
+
+                <button type="submit" class="btn btn-warning mt-3">Submit Review</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Rating Star Styling -->
+<style>
+    .rating-stars {
+        display: inline-block;
+        direction: rtl;
+    }
+
+    .rating-stars input {
+        display: none;
+    }
+
+    .rating-stars label {
+        font-size: 30px;
+        color: #ccc;
+        cursor: pointer;
+    }
+
+    .rating-stars input:checked ~ label {
+        color: gold;
+    }
+
+    .rating-stars input:hover ~ label {
+        color: #ffcc00;
+    }
+</style>
+{% endblock %}

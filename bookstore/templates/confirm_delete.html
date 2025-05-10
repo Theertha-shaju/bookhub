@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Delete Book</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+    }
+    .delete-container {
+      max-width: 500px;
+      margin: 100px auto;
+      padding: 30px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+    }
+    .btn {
+      margin: 10px 5px 0 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="delete-container">
+    <h2>Delete Book</h2>
+    <p>Are you sure you want to delete "{{ book.title }}"?</p>
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Yes, Delete</button>
+      <a href="{% url 'seller_books' %}" class="btn btn-warning">Cancel</a>
+    </form>
+  </div>
+
+</body>
+</html>

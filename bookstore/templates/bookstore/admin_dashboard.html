@@ -1,148 +1,192 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Book Hub</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        .dashboard-container {
-            max-width: 1200px;
-            margin: auto;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .chart-container {
-            width: 100%;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-            height: 400px;  /* Set a fixed height */
-        }
-        canvas {
-            width: 100% !important;
-            height: 100% !important;  /* Ensure the chart fills the container */
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - Book Hub</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    * {
+      user-select: none; /* Prevent text selection globally */
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding-left: 220px; /* space for sidebar */
+    }
+
+    .sidebar {
+      width: 200px;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #2c3e50;
+      padding-top: 30px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .sidebar h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .sidebar a {
+      text-decoration: none;
+      color: white;
+      padding: 12px 20px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      transition: background 0.3s;
+    }
+
+    .sidebar a i {
+      margin-right: 10px;
+    }
+
+    .sidebar a:hover {
+      background-color: #34495e;
+    }
+
+    .dashboard-container {
+      max-width: 1200px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .chart-container {
+      width: 100%;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin-top: 20px;
+      height: 400px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+    .sidebar .avatar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .sidebar .avatar img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid white;
+    }
+  </style>
 </head>
 <body>
-    <h2 style="text-align: center;">Admin Dashboard</h2>
-    
-    <div class="dashboard-container">
-        <div class="card">
-            <h3>Total Sellers</h3>
-            <p id="total-sellers">Loading...</p>
-        </div>
-        <div class="card">
-            <h3>Total Books</h3>
-            <p id="total-books">Loading...</p>
-        </div>
-        <div class="card">
-            <h3>Total Orders</h3>
-            <p id="total-orders">Loading...</p>
-        </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="avatar">
+        <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile Avatar">
+      </div>
+    <h2><i class="fas fa-cogs"></i> Admin</h2>
+    <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+            <a href="{% url 'categories' %}"><i class="fas fa-th-large"></i> Categories</a>
+    <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+    <a href="#"><i class="fas fa-book"></i> Book Details</a>
+    <a href="{% url 'admin_reviews' %}"><i class="fas fa-comment-dots"></i> View Feedback </a>
+    <a href="{% url 'view_sellers' %}"><i class="fas fa-users"></i> Sellers</a>
+    <a href="{% url 'admin_orders' %}"><i class="fas fa-shopping-cart"></i> Orders</a>
+    <a href="{% url 'admin_logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a> 
+  </div>
+
+  <h2 style="text-align: center;">Admin Dashboard</h2>
+
+  <div class="dashboard-container">
+    <div class="card">
+      <h3>Total Sellers</h3>
+      <p id="total-sellers">Loading...</p>
     </div>
-    
-    <div class="chart-container">
-        <h3>Sales & Revenue Overview</h3>
-        <p>Demo Mode - Model Data</p>
-        <canvas id="salesChart"></canvas>
+    <div class="card">
+      <h3>Total Books</h3>
+      <p id="total-books">Loading...</p>
     </div>
-    
-    <script>
+    <div class="card">
+      <h3>Total Orders</h3>
+      <p id="total-orders">Loading...</p>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <h3>Sales & Revenue Overview</h3>
+    <canvas id="salesChart"></canvas>
+  </div>
+
+  <script>
     document.addEventListener("DOMContentLoaded", function () {
-        fetchAdminData();
-        initializeChart();
+      fetchAdminData();
+      initializeChart();
     });
-    
-    // Fetch data from Django backend
+
     function fetchAdminData() {
-        fetch("/get_admin_data/")
-            .then(response => response.json())
-            .then(data => {
-                console.log("Data received:", data);  // Debugging
-                document.getElementById("total-sellers").innerText = data.total_sellers;
-                document.getElementById("total-books").innerText = data.total_books;
-                document.getElementById("total-orders").innerText = data.total_orders;
-
-                // Pass the sales data to the chart function
-                initializeChart(data.sales_data);
-            })
-            .catch(error => console.error("Error fetching data:", error));
+      fetch("/get_admin_data/")
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("total-sellers").innerText = data.total_sellers;
+          document.getElementById("total-books").innerText = data.total_books;
+          document.getElementById("total-orders").innerText = data.total_orders;
+          initializeChart(data.sales_data);
+        })
+        .catch(error => console.error("Error fetching data:", error));
     }
 
-    // Initialize Sales Chart with actual data (converted to INR)
     function initializeChart(salesData) {
-        const ctx = document.getElementById("salesChart").getContext("2d");
-
-        // Destroy the previous chart if it exists to avoid multiple charts being created
-        if (window.chartInstance) {
-            window.chartInstance.destroy();
-        }
-
-        // Convert USD to INR by multiplying with 80
-        const salesInINR = (salesData || [500, 700, 800, 900, 1200, 1500]).map(value => value * 80);
-
-        window.chartInstance = new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-                datasets: [{
-                    label: "Sales Revenue (INR)",  // Label updated to INR
-                    data: salesInINR,  // Data converted to INR
-                    backgroundColor: "rgba(54, 162, 235, 0.6)",
-                    borderColor: "rgba(54, 162, 235, 1)",
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,  // Make the chart responsive
-                maintainAspectRatio: false,  // Allow resizing of the chart
-                scales: {
-                    y: { 
-                        beginAtZero: true 
-                    }
-                },
-                plugins: {
-                    // Custom plugin to draw text inside the chart
-                    afterDraw: function(chart) {
-                        const ctx = chart.ctx;
-                        const width = chart.width;
-                        const height = chart.height;
-                        const message = "Demo Mode - Model Data"; // Text to display inside the chart
-                        
-                        ctx.save();
-                        ctx.font = '24px Arial';
-                        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';  // Semi-transparent black
-                        ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
-
-                        // Draw the message inside the chart (centered)
-                        ctx.fillText(message, width / 2, height / 2);
-                        ctx.restore();
-                    }
-                }
+      const ctx = document.getElementById("salesChart").getContext("2d");
+      if (window.chartInstance) window.chartInstance.destroy();
+      const salesInINR = (salesData || [500, 700, 800, 900, 1200, 1500]).map(v => v * 80);
+      window.chartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+          datasets: [{
+            label: "Sales Revenue (INR)",
+            data: salesInINR,
+            backgroundColor: "rgba(54, 162, 235, 0.6)",
+            borderColor: "rgba(54, 162, 235, 1)",
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true
             }
-        });
+          }
+        }
+      });
     }
- </script>
+  </script>
+
 </body>
 </html>

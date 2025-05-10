@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect,HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -30,7 +30,7 @@ from django.db.models.functions import TruncMonth
 from .models import Book, Order
 from django.utils import timezone
 from datetime import timedelta
-from .models import Order,Review
+from .models import Order,Review,Buyer
 # Ensure Buyer is imported
 
 
@@ -200,8 +200,36 @@ def signup_view(request):
 def admin_logout(request):
     logout(request)
     return redirect('admin_login') 
+def admin_dashboard(request):
+    # 📚 Total Books Sold
+    total_books_sold = OrderItem.objects.aggregate(total_sold=Sum('quantity'))['total_sold'] or 0
 
-# ✅ Admin Login
+    # 👥 Total Buyers Count
+    total_buyers = Buyer.objects.count()
+
+    # 💰 Total Payments Received
+    total_payments = Order.objects.aggregate(total_amount=Sum('total_price'))['total_amount'] or 0
+
+    # 📊 Top-Selling Books
+    top_selling_books = OrderItem.objects.values('book__title').annotate(sold=Sum('quantity')).order_by('-sold')[:5]
+
+    context = {
+        'total_books_sold': total_books_sold,
+        'total_buyers': total_buyers,
+        'total_payments': total_payments,
+        'top_selling_books': top_selling_books,
+    }
+    return render(request, 'bookstore/admin_dashboard.html')
+
+def get_admin_data(request):
+    data = {
+        "total_sellers": SellerProfile.objects.count(),
+        "total_books": Book.objects.count(),
+        "total_orders": Order.objects.count(),
+    }
+    return JsonResponse(data)
+
+
 def admin_login(request):
     if request.user.is_authenticated and request.user.is_superuser:
         return redirect('admin_dashboard')
@@ -215,38 +243,6 @@ def admin_login(request):
         else:
             messages.error(request, "Invalid admin credentials.")
     return render(request, 'bookstore/admin_login.html')
-
-
-def admin_dashboard(request):
-    # 📚 Total Books Sold
-    total_books_sold = Order.objects.aggregate(total_sold=Sum('quantity'))['total_sold'] or 0
-    
-    # 👥 Total Buyers Count
-    total_buyers = Buyer.objects.count()
-    
-    # 💰 Total Payments Received
-    total_payments = Order.objects.aggregate(total_amount=Sum('total_price'))['total_amount'] or 0
-
-    # 📊 Top-Selling Books
-    top_selling_books = Order.objects.values('book__title').annotate(sold=Sum('quantity')).order_by('-sold')[:5]
-
-    context = {
-        'total_books_sold': total_books_sold,
-        'total_buyers': total_buyers,
-        'total_payments': total_payments,
-        'top_selling_books': top_selling_books,
-    }
-    return render(request, 'bookstore/admin_dashboard.html')
-
-
-def get_admin_data(request):
-    data = {
-       "total_sellers": SellerProfile.objects.count(),
-        "total_books": Book.objects.count(),
-        "total_orders": Order.objects.count(),
-    }
-    
-    return JsonResponse(data)
 
 
 @login_required
@@ -738,3 +734,140 @@ def submit_review(request, book_id):
         rating = request.POST.get('rating')  # Assuming a POST request with a rating
         Review.objects.create(book=book, user=request.user, rating=rating)
         return redirect('book_details', book_id=book.id)  # Redirect to book details page
+
+# def payment_details(request):
+#     # This is just a placeholder; replace it with actual logic if necessary
+#     return render(request, 'bookstore/payment_details.html', {})
+
+
+@login_required
+def seller_books(request):
+    seller = request.user
+    books = Book.objects.filter(seller=seller)
+    return render(request, "seller_books.html", {"books": books})
+
+@login_required
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id, seller=request.user)
+
+    if request.method == "POST":
+        form = BookForm(request.POST, request.FILES, instance=book)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Book updated successfully!")
+            return redirect("seller_books")
+    else:
+        form = BookForm(instance=book)
+
+    return render(request, "edit_book.html", {"form": form})
+@login_required
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id, seller=request.user)
+    if request.method == "POST":
+        book.delete()
+        messages.success(request, "Book deleted successfully!")
+        return redirect("seller_books")
+    return render(request, "confirm_delete.html", {"book": book})
+
+def seller_logout(request):
+    logout(request)
+    return redirect('home')
+
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+
+def Buyer_logout(request):
+    logout(request)
+    return redirect('login') 
+
+
+
+def admin_book_detail(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    return render(request, 'admin_book_detail.html', {'book': book})
+
+def admin_delete_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    book.delete()
+    return redirect('admin_dashboard')  # Or wherever you want to redirect
+
+
+
+def view_sellers(request):
+    sellers = SellerProfile.objects.all()
+    return render(request, 'view_sellers.html', {'sellers': sellers})
+def delete_seller(request, seller_id):
+    seller = get_object_or_404(Seller, id=seller_id)
+    seller.delete()
+    return redirect('view_sellers')  #
+
+def admin_view_orders(request):
+     # Or render a forbidden page
+
+    orders = Order.objects.all().order_by('-ordered_at')  # Admin sees all orders
+    order_data = []
+
+    for order in orders:
+        order_items = OrderItem.objects.filter(order=order)
+        items = []
+
+        for item in order_items:
+            subtotal = item.price * item.quantity
+            items.append({
+                'book': item.book,
+                'quantity': item.quantity,
+                'price': item.price,
+                'subtotal': subtotal,
+            })
+
+        order_data.append({
+            'order': order,
+            'order_items': items,
+            'num_books': sum(item['quantity'] for item in items),
+        })
+
+    return render(request, 'bookstore/admin_orders.html', {'orders': order_data})
+
+
+def review_page(request, book_id, order_id):
+    book = get_object_or_404(Book, id=book_id)
+    order = get_object_or_404(Order, id=order_id)
+    ratings = range(1, 6)
+    review_text = request.POST.get('review_text')  
+
+    if request.method == 'POST':
+        review_text = request.POST.get('review_text')
+        rating = request.POST.get('rating')
+        image = request.FILES.get('image')  # optional
+
+        # Save the review with rating
+        review = Review.objects.create(
+            book=book,
+            user=request.user,
+            rating=rating,  # <-- Add this line
+            review_text=review_text,
+            image=image,
+        )
+
+        messages.success(request, "Your review has been submitted.")
+        return redirect('my_orders')  # or wherever you want to redirect
+
+    return render(request, 'review_page.html', {
+        'book': book,
+        'order': order,
+        'ratings': ratings
+    })
+
+
+def admin_reviews(request):
+    reviews = Review.objects.all()  # Get all reviews
+    return render(request, 'admin_reviews.html', {'reviews': reviews})
+
+
+def admin_view_buyers(request):
+    buyers =Buyer.objects.all()
+    return render(request, 'admin_buyers.html', {'buyers': buyers})
+def delete_buyer(request, buyer_id):
+    buyers = get_object_or_404(Seller, id=buyer_id)
+    buyers.delete()
+    return redirect('admin_buye')  #

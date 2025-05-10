@@ -31,6 +31,8 @@ urlpatterns = [
     path('admin-logout/', views.admin_logout, name='admin_logout'),  
     path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),  
      path('get_admin_data/', get_admin_data, name='get_admin_data'),
+    
+    # path('payment-details/', views.payment_details, name='payment_details'),
 
     # ✅ Category and Book Details
     path('fiction/', views.fiction_books, name='fiction_books'),
@@ -65,6 +67,24 @@ urlpatterns = [
         path('seller/signup/', seller_signup, name='seller_signup'),
     path('seller/login/', seller_login, name='seller_login'),
     path('seller/dashboard/', seller_dashboard, name='seller_dashboard'),
+ path("seller/books/", views.seller_books, name="seller_books"),
+    path("seller/book/edit/<int:book_id>/", views.edit_book, name="edit_book"),
+    path("seller/book/delete/<int:book_id>/", views.delete_book, name="delete_book"),
+    path('seller/logout/', views.seller_logout, name='seller_logout'),
+    path('Buyer/logout/', views.Buyer_logout, name='buyer_logout'),
+    path('dashboard/book/<int:book_id>/', views.admin_book_detail, name='abook_detail'),
+path('admin/book/<int:book_id>/delete/', views.admin_delete_book, name='admin_delete_book'),
+path('dashboard/admin-sellers/', views.view_sellers, name='view_sellers'),
+    path('dlt/sellers/delete/<int:seller_id>/', views.delete_seller, name='delete_seller'),
+        path('dashboard/admin-orders/', views.admin_view_orders, name='admin_orders'),
+       path('review/<int:book_id>/order/<int:order_id>/', views.review_page, name='review_page'),
+       path('dashboard/admin-reviews/', views.admin_reviews, name='admin_reviews'),
+         path('dashboard/buyers/', views.admin_view_buyers, name='admin_view_buyers'),
+         path('dlt/buyers/delete/<int:buyer_id>/', views.delete_buyer, name='delete_seller'),
+
+
+
+
 
 
 

@@ -1,81 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seller Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 20px;
-        }
-        .dashboard {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            display: inline-block;
-            width: 80%;
-        }
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-        }
-        .card {
-            background: #007bff;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-            font-size: 18px;
-            font-weight: bold;
-            width: 200px;
-        }
-        .chart-container {
-            width: 80%;
-            margin: auto;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Seller Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- FAFA icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      display: flex;
+    }
+
+    .sidebar {
+      width: 230px;
+      background-color: #2c3e50;
+      height: 100vh;
+      color: white;
+      padding-top: 20px;
+      position: fixed;
+    }
+
+    .sidebar .avatar {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .sidebar .avatar img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid white;
+    }
+
+    .sidebar h3 {
+      text-align: center;
+      margin: 10px 0 20px;
+      font-size: 18px;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 15px;
+      transition: background 0.3s ease;
+    }
+
+    .sidebar a i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar a:hover {
+      background-color: #2980b9;
+    }
+
+    .dashboard {
+      margin-left: 230px;
+      padding: 30px;
+      width: calc(100% - 230px);
+    }
+
+    .dashboard h2 {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      flex: 1;
+      min-width: 200px;
+      background: #007bff;
+      color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      font-weight: bold;
+      text-align: center;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .chart-container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </head>
 <body>
-    <div class="dashboard">
-        <h2>Seller Dashboard</h2>
-        <div class="stats">
-            <div class="card">Total Books: {{ total_books }}</div>
-            <div class="card">Books Sold: {{ books_sold }}</div>
-            <div class="card">Added to Cart: {{ total_add_to_cart }}</div>
-            
-        </div>
-    
-        <canvas id="growthChart"></canvas>
+
+  <div class="sidebar">
+    <div class="avatar">
+      <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Profile Avatar">
     </div>
+    <h3>Seller Panel</h3>
+    <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
+    <a href="{% url 'categories' %}"><i class="fas fa-th-large"></i> Categories</a>
+
+    <a href="{% url 'seller_books' %}"><i class="fas fa-book"></i> View Published Books</a>
+    <a href="{% url 'seller_dashboard' %}"><i class="fas fa-tachometer-alt"></i> Seller Dashboard</a>
+    <a href="{% url 'add_book' %}"><i class="fas fa-plus-circle"></i> Add New Book</a>
+    <a href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
     
-    <script>
-        var ctx = document.getElementById('growthChart').getContext('2d');
-        var monthlySales = [{% for sale in monthly_sales %}{"month": "{{ sale.month }}", "total": {{ sale.total }}},{% endfor %}];
+  </div>
 
-        if (monthlySales.length > 0) {
-            var labels = monthlySales.map(sale => sale.month);
-            var dataValues = monthlySales.map(sale => sale.total);
+  <div class="dashboard">
+    <h2>Seller Dashboard</h2>
+    <div class="stats">
+      <div class="card">Total Books: {{ total_books }}</div>
+      <div class="card">Books Sold: {{ books_sold }}</div>
+      <div class="card">Added to Cart: {{ total_add_to_cart }}</div>
+    </div>
 
-            new Chart(ctx, {
-                type: "bar",
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: "Monthly Sales Growth",
-                        backgroundColor: "blue",
-                        data: dataValues
-                    }]
-                }
-            });
-        } else {
-            document.getElementById('growthChart').style.display = "none";
+    <div class="chart-container">
+      <canvas id="salesChart" height="100"></canvas>
+    </div>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('salesChart').getContext('2d');
+    const salesChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+        datasets: [{
+          label: 'Books Sold',
+          data: [5, 10, 3, 7, 2],  // Replace this with dynamic data
+          backgroundColor: 'rgba(0, 123, 255, 0.7)',
+          borderRadius: 5
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true
+          }
         }
-    </script>
+      }
+    });
+  </script>
+  
+
 </body>
 </html>
