@@ -31,10 +31,12 @@
 
 <div class="book-container">
   <h2 class="text-center font-weight-bold mb-4">Your Published Books</h2>
+  <img src="{{book.image.url }}" alt="Book Cover" class="book-cover img-thumbnail d-block mx-auto">
 
   {% for book in books %}
     <div class="book-card">
       <h3>{{ book.title }}</h3>
+      
       <p><strong>Author:</strong> {{ book.author }}</p>
       <p><strong>Price:</strong> ₹{{ book.price }}</p>
       <p><strong>Stock:</strong> {{ book.stock }}</p>

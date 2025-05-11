@@ -73,7 +73,7 @@ urlpatterns = [
     path('seller/logout/', views.seller_logout, name='seller_logout'),
     path('Buyer/logout/', views.Buyer_logout, name='buyer_logout'),
     path('dashboard/book/<int:book_id>/', views.admin_book_detail, name='abook_detail'),
-path('admin/book/<int:book_id>/delete/', views.admin_delete_book, name='admin_delete_book'),
+path('a/book/<int:book_id>/delete/', views.admin_delete_book, name='admin_delete_book'),
 path('dashboard/admin-sellers/', views.view_sellers, name='view_sellers'),
     path('dlt/sellers/delete/<int:seller_id>/', views.delete_seller, name='delete_seller'),
         path('dashboard/admin-orders/', views.admin_view_orders, name='admin_orders'),
@@ -81,6 +81,10 @@ path('dashboard/admin-sellers/', views.view_sellers, name='view_sellers'),
        path('dashboard/admin-reviews/', views.admin_reviews, name='admin_reviews'),
          path('dashboard/buyers/', views.admin_view_buyers, name='admin_view_buyers'),
          path('dlt/buyers/delete/<int:buyer_id>/', views.delete_buyer, name='delete_seller'),
+         path('bookadminv',views.admin_bookv,name="admin_bookv"),
+          path('book/delete-book/<int:book_id>/', views.delete_book, name='delete_book'),
+          
+
 
 
 

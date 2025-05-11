@@ -553,12 +553,18 @@ def add_book(request):
 
     categories = Category.objects.all()
     return render(request, "add_book.html", {"categories": categories})
+
+
 def seller_signup(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
         confirm_password = request.POST.get("confirm_password")
         store_name = request.POST.get("store_name")
+        email = request.POST.get("email")
+        phone_number = request.POST.get("phone_number")
+
+        
 
         if not confirm_password:
             messages.error(request, "Confirm Password field is missing.")
@@ -574,8 +580,8 @@ def seller_signup(request):
             return redirect("seller_signup")
 
         # ✅ Create User and SellerProfile
-        user = User.objects.create_user(username=username, password=password)
-        seller_profile = SellerProfile.objects.create(user=user, store_name=store_name)  # Create seller profile
+        user = User.objects.create_user(username=username, password=password,email=email,phone_number=phone_number)
+        seller_profile = SellerProfile.objects.create(user=user, store_name=store_name,email=email,phone_number=phone_number)  # Create seller profile
         user.save()
         seller_profile.save()
 
@@ -588,6 +594,7 @@ def seller_login(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
+        
 
         user = authenticate(request, username=username, password=password)
 
@@ -644,6 +651,7 @@ def seller_dashboard(request):
     }
 
     return render(request, 'seller_dashboard.html', context)
+    
 
  
     
@@ -707,9 +715,11 @@ def my_orders(request):
     for order in orders:
         order_items = OrderItem.objects.filter(order=order)
         items = []
+        total_amount = 0
 
         for item in order_items:
             subtotal = item.price * item.quantity
+            total_amount += subtotal
             items.append({
                 'book': item.book,
                 'quantity': item.quantity,
@@ -717,16 +727,22 @@ def my_orders(request):
                 'subtotal': subtotal,
             })
 
+        estimated_delivery = order.ordered_at + timedelta(days=5)
+
         order_data.append({
             'order': order,
             'order_items': items,
             'num_books': sum(item['quantity'] for item in items),
+            'total_amount': total_amount,
+            'estimated_delivery': estimated_delivery,
+            'billing_address': order.billing_address if order.billing_address else 'Not Provided',
+            'delivery_method': order.delivery_method if order.delivery_method else 'Not Provided',
+            'payment_status': order.payment_status,  # e.g., 'Paid' or 'Unpaid'
+            'shipping_status': order.shipping_date,  # e.g., 'Pending', 'Shipped'
+            'formatted_order_id': f"BH{order.id:02d}",
         })
 
     return render(request, 'bookstore/my_orders.html', {'orders': order_data})
-
-
-
 
 def submit_review(request, book_id):
     book = Book.objects.get(id=book_id)
@@ -789,7 +805,7 @@ def admin_book_detail(request, book_id):
 def admin_delete_book(request, book_id):
     book = get_object_or_404(Book, id=book_id)
     book.delete()
-    return redirect('admin_dashboard')  # Or wherever you want to redirect
+    return redirect('admin_bookv')  # Or wherever you want to redirect
 
 
 
@@ -870,4 +886,17 @@ def admin_view_buyers(request):
 def delete_buyer(request, buyer_id):
     buyers = get_object_or_404(Seller, id=buyer_id)
     buyers.delete()
-    return redirect('admin_buye')  #
+    return redirect('admin_buye')  
+
+@login_required
+def admin_bookv(request):
+    # Filter books by the seller (if you want to show all books)
+    books = Book.objects.all()  
+    # This fetches all books
+    return render(request, 'admin_bookv.html', {'books': books})
+
+
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    book.delete()
+    return redirect('admin_bookv') 

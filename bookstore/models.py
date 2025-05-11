@@ -19,6 +19,7 @@ def generate_unique_slug(instance, model, field_name="title"):
 # ✅ Seller Profile Model  
 class SellerProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="seller_profile")
+    email = models.EmailField(max_length=255, unique=True, null=True, blank=True,) 
     store_name = models.CharField(max_length=255, unique=True, verbose_name="Store Name")
     phone_number = models.CharField(max_length=15, blank=True, null=True, verbose_name="Phone Number")
     address = models.TextField(blank=True, null=True, verbose_name="Address")
@@ -58,6 +59,7 @@ class Book(models.Model):
     stock = models.PositiveIntegerField(default=10, verbose_name="Stock Available")
     published_date = models.DateField(blank=True, null=True, verbose_name="Publication Date")
     rating = models.FloatField(default=0) 
+    added_on = models.DateField(auto_now_add=True)
     isbn = models.CharField(
         max_length=13, unique=True, blank=True, null=True, verbose_name="ISBN (Unique)",
         validators=[MinLengthValidator(13), MaxLengthValidator(13)]

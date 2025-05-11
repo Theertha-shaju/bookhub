@@ -112,7 +112,8 @@
     <a href="{% url 'home' %}"><i class="fas fa-home"></i> Home</a>
             <a href="{% url 'categories' %}"><i class="fas fa-th-large"></i> Categories</a>
     <a href="#"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-    <a href="#"><i class="fas fa-book"></i> Book Details</a>
+    <a href="{% url 'add_book' %}"><i class="fas fa-plus-circle"></i> Add New Book</a>
+    <a href="{% url  'admin_bookv' %}"><i class="fas fa-book"></i> Book Details</a>
     <a href="{% url 'admin_reviews' %}"><i class="fas fa-comment-dots"></i> View Feedback </a>
     <a href="{% url 'view_sellers' %}"><i class="fas fa-users"></i> Sellers</a>
     <a href="{% url 'admin_orders' %}"><i class="fas fa-shopping-cart"></i> Orders</a>

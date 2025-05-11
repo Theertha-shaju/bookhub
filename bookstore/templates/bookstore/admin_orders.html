@@ -9,6 +9,7 @@
         <div class="row">
             <!-- Image on Left (Only show the first book's image) -->
             <div class="col-md-3 text-center">
+                {{request.user.name}}
                 <img src="{{ entry.order_items.0.book.image.url }}"
                      alt="{{ entry.order_items.0.book.title }}"
                      class="img-fluid rounded shadow"
@@ -17,6 +18,7 @@
 
             <!-- Main Order Info on Right -->
             <div class="col-md-9">
+               
                 <h5><strong>🆔 Order ID:</strong> BH{{ entry.order.order_id }}</h5>
                 <p><strong>📅 Ordered On:</strong> {{ entry.order.ordered_at }}</p>
                 <p><strong>🚚 Shipping Status:</strong> {{ entry.order.status }}</p>
@@ -37,7 +39,7 @@
             <p><strong>📚 Number of Books:</strong> {{ entry.num_books }}</p>
             <p><strong>💳 Payment Status:</strong> {{ entry.order.payment_status }}</p>
             <p><strong>🏠 Billing Address:</strong> {{ entry.order.billing_address|default:"None" }}</p>
-            <p><strong>🚚 Delivery Method:</strong> {{ entry.order.delivery_method|default:"None" }}</p>
+            
 
             <!-- Loop Through Each Book in the Order -->
             <h6>Books in this Order:</h6>

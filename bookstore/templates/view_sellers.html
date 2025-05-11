@@ -73,6 +73,7 @@
         <thead>
           <tr>
             <th>Name</th>
+            <th>Store Name</th>
             <th>Email</th>
             <th>Phone Number</th>
           </tr>
@@ -80,6 +81,7 @@
         <tbody>
           {% for seller in sellers %}
             <tr>
+              <td>{{seller.user}}</td>
               <td>{{ seller.store_name }}</td>
               <td>{{ seller.user.email }}</td>
              <td>{{ seller.phone_number }}</td>
